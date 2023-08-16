@@ -1,5 +1,4 @@
-import React, { useState } from "react";
-import { renderToString } from "react-dom/server";
+import React from "react";
 
 import { DynamicLinkInfo } from "@/lib/links/types";
 
@@ -10,16 +9,26 @@ export default function PreviewPage({
   dynamicLinkUrl: string;
   info: DynamicLinkInfo;
 }) {
-  const [isChecked, setIsChecked] = useState(true);
+  let isChecked = true;
 
   const handleCheckboxChange = () => {
-    setIsChecked(!isChecked);
+    isChecked = !isChecked; // NOTE: this may not work as there's no rerender
   };
 
   const handleSubmit = (e: any) => {
     e.preventDefault();
     // Handle form submission logic here
-    window.location.href = dynamicLinkUrl; // Replace with your desired URL
+
+    navigator.clipboard
+      .writeText(dynamicLinkUrl)
+      .then(() => {
+        // TODO: we need a way to statically compute the iOS and Android app store links.
+        // Only use fallbacks if they're set for each os
+        window.location.href = info.iosInfo?.iosFallbackLink || "";
+      })
+      .catch((error) => {
+        console.error("Error copying text:", error);
+      });
   };
 
   return (
@@ -74,14 +83,5 @@ export default function PreviewPage({
         </div>
       </body>
     </html>
-  );
-}
-
-export function getPreviewPageHtml(
-  dynamicLinkUrl: string,
-  info: DynamicLinkInfo,
-) {
-  return renderToString(
-    <PreviewPage dynamicLinkUrl={dynamicLinkUrl} info={info}></PreviewPage>,
   );
 }

@@ -4,9 +4,10 @@ import { Metadata } from "next";
 import Image from "next/image";
 import { notFound } from "next/navigation";
 import { NextFetchEvent, NextRequest, NextResponse } from "next/server";
+import { renderToString } from "react-dom/server";
 import { UAParser } from "ua-parser-js";
 
-import { getPreviewPageHtml } from "@/components/preview-page";
+import PreviewPage from "@/components/preview-page";
 import { DynamicLinkInfo } from "@/lib/links/types";
 import { getFallbackUrl } from "@/lib/links/utils";
 
@@ -89,13 +90,19 @@ export async function GET(request: NextRequest, context: NextFetchEvent) {
     // context.waitUntil(handleAnalytics('preview'))
     client.release();
 
-    const html = getPreviewPageHtml(dynamicLinkUrl, dynamicLinkInfo);
-
-    return new Response(html, {
-      headers: {
-        "content-type": "text/html;charset=UTF-8",
+    return new Response(
+      renderToString(
+        <PreviewPage
+          dynamicLinkUrl={dynamicLinkUrl}
+          info={dynamicLinkInfo}
+        ></PreviewPage>,
+      ),
+      {
+        headers: {
+          "content-type": "text/html;charset=UTF-8",
+        },
       },
-    });
+    );
   }
 
   const fallbackUrl = getFallbackUrl(dynamicLinkInfo, userAgent);
@@ -103,5 +110,9 @@ export async function GET(request: NextRequest, context: NextFetchEvent) {
   // TODO; add analytics info for redirect
   // context.waitUntil(handleAnalytics('redirect'))
   client.release();
+
+  // TODO: we need a way to statically compute the iOS and Android app store links.
+  // Only use fallbacks if they're set for each os
+
   return NextResponse.redirect(fallbackUrl, { status: 301 });
 }
