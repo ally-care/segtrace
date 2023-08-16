@@ -6,6 +6,7 @@ import { notFound } from "next/navigation";
 import { NextFetchEvent, NextRequest, NextResponse } from "next/server";
 import { UAParser } from "ua-parser-js";
 
+import { getPreviewPageHtml } from "@/components/preview-page";
 import { DynamicLinkInfo } from "@/lib/links/types";
 import { getFallbackUrl } from "@/lib/links/utils";
 
@@ -71,6 +72,7 @@ export async function GET(request: NextRequest, context: NextFetchEvent) {
     return notFound();
   }
 
+  const dynamicLinkUrl = rows[0].url as string;
   const dynamicLinkInfo = rows[0].info as DynamicLinkInfo;
 
   if (request.headers.get("x-segtrace-link-request")) {
@@ -87,8 +89,13 @@ export async function GET(request: NextRequest, context: NextFetchEvent) {
     // context.waitUntil(handleAnalytics('preview'))
     client.release();
 
-    // TODO; return HTML page with preview link
-    return "";
+    const html = getPreviewPageHtml(dynamicLinkUrl, dynamicLinkInfo);
+
+    return new Response(html, {
+      headers: {
+        "content-type": "text/html;charset=UTF-8",
+      },
+    });
   }
 
   const fallbackUrl = getFallbackUrl(dynamicLinkInfo, userAgent);
