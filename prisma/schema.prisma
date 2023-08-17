@@ -133,4 +133,5 @@ model DynamicLink {
   userId        String
   
   @@index([url])
+  @@map("dynamic_link")
 }
