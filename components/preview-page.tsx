@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 
 import { DynamicLinkInfo } from "@/lib/links/types";
 
@@ -9,10 +9,10 @@ export default function PreviewPage({
   dynamicLinkUrl: string;
   info: DynamicLinkInfo;
 }) {
-  let isChecked = true;
+  const [isChecked, setIsChecked] = useState(true);
 
   const handleCheckboxChange = () => {
-    isChecked = !isChecked; // NOTE: this may not work as there's no rerender
+    setIsChecked(!isChecked);
   };
 
   const handleSubmit = (e: any) => {
@@ -44,7 +44,7 @@ export default function PreviewPage({
             {info?.socialMetaTagInfo?.socialImageLink && (
               <div className="mb-4">
                 <img
-                  alt="Your Image"
+                  alt="App Image"
                   className="mx-auto h-20"
                   src={info.socialMetaTagInfo?.socialImageLink}
                 />
