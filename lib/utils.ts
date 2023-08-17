@@ -57,3 +57,28 @@ export const toDateString = (date: Date) => {
 export const random = (min: number, max: number) => {
   return Math.floor(Math.random() * (max - min + 1) + min);
 };
+
+export type NextUa = {
+  browser: {
+    name?: string;
+    version?: string;
+  };
+  cpu: {
+    architecture?: string;
+  };
+  device: {
+    model?: string;
+    type?: string;
+    vendor?: string;
+  };
+  engine: {
+    name?: string;
+    version?: string;
+  };
+  isBot: boolean;
+  os: {
+    name?: string;
+    version?: string;
+  };
+  ua: string;
+};

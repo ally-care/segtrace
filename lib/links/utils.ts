@@ -1,3 +1,4 @@
+import { NextUa } from "../utils";
 import { DynamicLinkInfo } from "./types";
 
 /*
@@ -9,22 +10,19 @@ import { DynamicLinkInfo } from "./types";
  * RIM Tablet OS, RISC OS, Sailfish, Series40, Slackware, Solaris, SUSE, Symbian, Tizen,
  * Ubuntu, UNIX, VectorLinux, WebOS, Windows [Phone/Mobile], Zenwalk
  */
-export function getFallbackUrl(
-  info: DynamicLinkInfo,
-  ua: UAParser.UAParserInstance,
-) {
+export function getFallbackUrl(info: DynamicLinkInfo, ua: NextUa) {
   const getBaseUrl = () => {
-    switch (ua.getOS.name) {
+    switch (ua.os.name) {
       case "Android":
         return info.androidInfo?.androidFallbackLink
           ? info.androidInfo.androidFallbackLink
           : info.link;
       case "iOS":
-        if (ua.getDevice().type === "mobile") {
+        if (ua.device.type === "mobile") {
           return info.iosInfo?.iosFallbackLink
             ? info.iosInfo.iosFallbackLink
             : info.link;
-        } else if (ua.getDevice().type === "tablet") {
+        } else if (ua.device.type === "tablet") {
           return info.iosInfo?.iosIpadFallbackLink
             ? info.iosInfo.iosIpadFallbackLink
             : info.link;
@@ -83,5 +81,5 @@ export function getFallbackUrl(
     }
   }
 
-  return fallbackUrl;
+  return "https://" + fallbackUrl;
 }

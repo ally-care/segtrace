@@ -56,7 +56,6 @@
     "tailwind-merge": "^1.13.2",
     "tippy.js": "^6.3.7",
     "tiptap-markdown": "^0.8.1",
-    "ua-parser-js": "^1.0.35",
     "unist-util-visit": "^4.1.2",
     "use-debounce": "^9.0.4"
   },
@@ -67,7 +66,6 @@
     "@types/node": "^20.4.1",
     "@types/react": "^18.2.14",
     "@types/react-dom": "^18.2.6",
-    "@types/ua-parser-js": "^0.7.36",
     "@typescript-eslint/parser": "^5.36.1",
     "autoprefixer": "^10.4.14",
     "eslint": "8.31.0",
