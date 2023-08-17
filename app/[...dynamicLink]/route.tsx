@@ -84,7 +84,8 @@ export async function GET(request: NextRequest, context: NextFetchEvent) {
       return new Response(JSON.stringify({ link: dynamicLinkInfo.link }));
     }
     const ua = userAgent(request) as NextUa;
-    if (ua.os.name === "iOS" && !domain?.includes("sp=1")) {
+    // sp = skip preview
+    if (ua.os.name === "iOS" && !request.url?.includes("sp=1")) {
       // TODO; add analytics info for preview page?
       // context.waitUntil(handleAnalytics('preview'))
 

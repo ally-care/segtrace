@@ -14,6 +14,7 @@ export const config = {
   ],
 };
 
+// Docs: https://nextjs.org/docs/app/building-your-application/routing/dynamic-routes#catch-all-segments
 export default async function middleware(req: NextRequest) {
   const url = req.nextUrl;
 
@@ -35,13 +36,6 @@ export default async function middleware(req: NextRequest) {
     }
     return NextResponse.rewrite(
       new URL(`/app${path === "/" ? "" : path}`, req.url),
-    );
-  }
-
-  // special case for `vercel.pub` domain
-  if (hostname === "vercel.pub") {
-    return NextResponse.redirect(
-      "https://vercel.com/blog/platforms-starter-kit",
     );
   }
 
