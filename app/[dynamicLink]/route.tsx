@@ -4,7 +4,6 @@ import { Metadata } from "next";
 import Image from "next/image";
 import { notFound } from "next/navigation";
 import { NextFetchEvent, NextRequest, NextResponse } from "next/server";
-import { renderToString } from "react-dom/server";
 import { UAParser } from "ua-parser-js";
 
 import PreviewPage from "@/components/preview-page";
@@ -83,25 +82,18 @@ export async function GET(request: NextRequest, context: NextFetchEvent) {
 
   const userAgent = new UAParser(request.headers.get("user-agent") || "");
 
-  if (userAgent.getOS().name === "iOS") {
+  if (userAgent.getOS().name === "iOS" && !domain?.includes("sp=1")) {
     // Show preview page with action button to copy the link
 
     // TODO; add analytics info for preview page?
     // context.waitUntil(handleAnalytics('preview'))
     client.release();
 
-    return new Response(
-      renderToString(
-        <PreviewPage
-          dynamicLinkUrl={dynamicLinkUrl}
-          info={dynamicLinkInfo}
-        ></PreviewPage>,
-      ),
-      {
-        headers: {
-          "content-type": "text/html;charset=UTF-8",
-        },
-      },
+    return (
+      <PreviewPage
+        dynamicLinkUrl={`${dynamicLinkUrl}?sp=1`}
+        info={dynamicLinkInfo}
+      ></PreviewPage>
     );
   }
 
