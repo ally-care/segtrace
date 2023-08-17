@@ -9,9 +9,9 @@ import {
   NextResponse,
   userAgent,
 } from "next/server";
-import { UAParser } from "ua-parser-js";
 
-import PreviewPage from "@/components/preview-page";
+import PreviewPage from "@/lib/links/preview-page";
+import getPreviewPageHtml from "@/lib/links/preview-page";
 import { DynamicLinkInfo } from "@/lib/links/types";
 import { getFallbackUrl } from "@/lib/links/utils";
 import { NextUa } from "@/lib/utils";
@@ -85,16 +85,17 @@ export async function GET(request: NextRequest, context: NextFetchEvent) {
     }
     const ua = userAgent(request) as NextUa;
     if (ua.os.name === "iOS" && !domain?.includes("sp=1")) {
-      // Show preview page with action button to copy the link
-
       // TODO; add analytics info for preview page?
       // context.waitUntil(handleAnalytics('preview'))
 
-      return (
-        <PreviewPage
-          dynamicLinkUrl={`${dynamicLinkUrl}?sp=1`}
-          info={dynamicLinkInfo}
-        ></PreviewPage>
+      // Show preview page with action button to copy the link
+      return new Response(
+        getPreviewPageHtml(`${dynamicLinkUrl}?sp=1`, dynamicLinkInfo),
+        {
+          headers: {
+            "content-type": "text/html;charset=UTF-8",
+          },
+        },
       );
     }
 
